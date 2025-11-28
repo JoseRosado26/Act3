@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-brand h1 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 15px;
+            border-radius: 25px;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .welcome-section {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            border-left: 5px solid #667eea;
+        }
+
+        .welcome-section h1 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 32px;
+        }
+
+        .welcome-section p {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .user-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #e7f3ff;
+            padding: 10px 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card i {
+            font-size: 40px;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-card h3 {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-card .number {
+            font-size: 32px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .feature-card h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-card li {
+            padding: 8px 0;
+            color: #666;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-card li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-card li i {
+            color: #667eea;
+            width: 16px;
+        }
+
+        .admin-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="nav-brand">
+                <i class="fas fa-crown"></i>
+                <h1>Panel de Administración</h1>
+            </div>
+            <div class="nav-actions">
+                <div class="user-info">
+                    <i class="fas fa-user-shield"></i>
+                    <span th:text="${username}"></span>
+                    <span class="admin-badge">ADMIN</span>
+                </div>
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="welcome-section">
+            <h1>¡Bienvenido, <span th:text="${username}"></span>! 👋</h1>
+            <p>Estás en el panel de control administrativo. Desde aquí puedes gestionar todos los aspectos del sistema.</p>
+            <div class="user-badge">
+                <i class="fas fa-user-shield"></i>
+                <div>
+                    <strong>Rol:</strong> <span sec:authentication="authorities"></span><br>
+                    <strong>Último acceso:</strong> <span th:text="${#dates.format(#dates.createNow(), 'dd/MM/yyyy HH:mm')}"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fas fa-users"></i>
+                <h3>Usuarios Totales</h3>
+                <div class="number">1,248</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-user-check"></i>
+                <h3>Usuarios Activos</h3>
+                <div class="number">1,156</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-shield-alt"></i>
+                <h3>Administradores</h3>
+                <div class="number">12</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-chart-line"></i>
+                <h3>Crecimiento</h3>
+                <div class="number">+15.2%</div>
+            </div>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3><i class="fas fa-cog"></i> Configuración del Sistema</h3>
+                <ul>
+                    <li><i class="fas fa-sliders-h"></i> Ajustes generales</li>
+                    <li><i class="fas fa-palette"></i> Personalización</li>
+                    <li><i class="fas fa-bell"></i> Notificaciones</li>
+                    <li><i class="fas fa-database"></i> Backup automático</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h3><i class="fas fa-user-cog"></i> Gestión de Usuarios</h3>
+                <ul>
+                    <li><i class="fas fa-user-plus"></i> Crear usuarios</li>
+                    <li><i class="fas fa-user-edit"></i> Editar permisos</li>
+                    <li><i class="fas fa-user-lock"></i> Bloquear acceso</li>
+                    <li><i class="fas fa-chart-bar"></i> Estadísticas</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h3><i class="fas fa-chart-pie"></i> Reportes y Análisis</h3>
+                <ul>
+                    <li><i class="fas fa-chart-line"></i> Métricas de uso</li>
+                    <li><i class="fas fa-file-invoice"></i> Reportes detallados</li>
+                    <li><i class="fas fa-download"></i> Exportar datos</li>
+                    <li><i class="fas fa-filter"></i> Filtros avanzados</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

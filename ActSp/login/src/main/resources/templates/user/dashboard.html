@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Panel - Sistema Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            color: white;
+            padding: 0 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-brand h1 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 15px;
+            border-radius: 25px;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .welcome-section {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            border-left: 5px solid #764ba2;
+            text-align: center;
+        }
+
+        .welcome-section h1 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 32px;
+        }
+
+        .welcome-section p {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .user-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            background: #f0e7ff;
+            padding: 15px 25px;
+            border-radius: 15px;
+            margin-top: 25px;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .action-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .action-card i {
+            font-size: 48px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .action-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .action-card p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .recent-activity {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .recent-activity h2 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .activity-list {
+            list-style: none;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f0e7ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #764ba2;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .activity-time {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .user-badge {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            color: white;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="nav-brand">
+                <i class="fas fa-user-circle"></i>
+                <h1>Mi Panel</h1>
+            </div>
+            <div class="nav-actions">
+                <div class="user-info">
+                    <i class="fas fa-user"></i>
+                    <span th:text="${username}"></span>
+                    <span class="user-badge">USUARIO</span>
+                </div>
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="welcome-section">
+            <h1>¡Hola, <span th:text="${username}"></span>! 🎉</h1>
+            <p>Bienvenido a tu panel personal. Aquí puedes gestionar tu cuenta, acceder a tus recursos y configurar tus preferencias.</p>
+            <div class="user-badge">
+                <i class="fas fa-user-check"></i>
+                <div>
+                    <strong>Rol:</strong> <span sec:authentication="authorities"></span><br>
+                    <strong>Miembro desde:</strong> <span th:text="${#dates.format(#dates.createNow(), 'MMMM yyyy')}"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <div class="action-card">
+                <i class="fas fa-user-edit"></i>
+                <h3>Mi Perfil</h3>
+                <p>Actualiza tu información personal, foto de perfil y configuración de cuenta</p>
+            </div>
+
+            <div class="action-card">
+                <i class="fas fa-lock"></i>
+                <h3>Seguridad</h3>
+                <p>Cambia tu contraseña y configura la verificación en dos pasos</p>
+            </div>
+
+            <div class="action-card">
+                <i class="fas fa-bell"></i>
+                <h3>Notificaciones</h3>
+                <p>Gestiona tus preferencias de notificaciones y alertas</p>
+            </div>
+
+            <div class="action-card">
+                <i class="fas fa-cog"></i>
+                <h3>Configuración</h3>
+                <p>Personaliza tu experiencia y ajustes de la aplicación</p>
+            </div>
+        </div>
+
+        <div class="recent-activity">
+            <h2><i class="fas fa-history"></i> Actividad Reciente</h2>
+            <ul class="activity-list">
+                <li class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-sign-in-alt"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">Inicio de sesión exitoso</div>
+                        <div class="activity-time">Hace unos momentos</div>
+                    </div>
+                </li>

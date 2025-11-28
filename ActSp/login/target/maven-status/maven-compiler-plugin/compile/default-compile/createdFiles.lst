@@ -1,0 +1,9 @@
+com\example\login\model\Usuario$Rol.class
+com\example\login\controller\AuthController.class
+com\example\login\LoginApplication.class
+com\example\login\controller\AdminController.class
+com\example\login\repository\UsuarioRepository.class
+com\example\login\service\UsuarioService.class
+com\example\login\controller\UserController.class
+com\example\login\model\Usuario.class
+com\example\login\config\SecurityConfig.class
