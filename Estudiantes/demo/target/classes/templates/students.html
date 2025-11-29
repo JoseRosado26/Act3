@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Manager - CRUD Demo</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3f37c9;
+      --success: #4cc9f0;
+    }
+    
+    body {
+      background: #f5f7fa;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .navbar-brand {
+      font-weight: 700;
+    }
+    
+    .student-card {
+      background: white;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      margin-bottom: 1rem;
+    }
+    
+    .student-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+    
+    .student-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    
+    .stats-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      border: none;
+    }
+    
+    .form-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      border: none;
+    }
+    
+    .btn-primary {
+      background: var(--primary);
+      border: none;
+      border-radius: 8px;
+    }
+    
+    .btn-success {
+      background: var(--success);
+      border: none;
+      border-radius: 8px;
+    }
+    
+    .form-control {
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="/">
+        <i class="fas fa-graduation-cap me-2"></i>
+        Student Manager
+      </a>
+      <span class="navbar-text text-light">
+        <i class="fas fa-users me-1"></i>
+        <span th:text="${#lists.size(students)} + ' students'">0 students</span>
+      </span>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container my-4">
+    <!-- Header -->
+    <div class="row align-items-center mb-4">
+      <div class="col">
+        <h1 class="h2 text-primary mb-0">Student Management</h1>
+        <p class="text-muted mb-0">Manage your students' academic information</p>
+      </div>
+    </div>
+
+    <!-- Simple Stats -->
+    <div class="row mb-4">
+      <div class="col-md-3 mb-3">
+        <div class="stats-card">
+          <i class="fas fa-user-graduate fa-2x text-primary mb-2"></i>
+          <h4 class="text-primary" th:text="${#lists.size(students)}">0</h4>
+          <p class="text-muted mb-0">Total Students</p>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="stats-card">
+          <i class="fas fa-chart-line fa-2x text-success mb-2"></i>
+          <h4 class="text-success">-</h4>
+          <p class="text-muted mb-0">Average Grade</p>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="stats-card">
+          <i class="fas fa-award fa-2x text-warning mb-2"></i>
+          <h4 class="text-warning">-</h4>
+          <p class="text-muted mb-0">Highest Grade</p>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="stats-card">
+          <i class="fas fa-chart-bar fa-2x text-info mb-2"></i>
+          <h4 class="text-info">-</h4>
+          <p class="text-muted mb-0">Active</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <!-- Students Cards -->
+      <div class="col-lg-8">
+        <h4 class="fw-bold mb-3">Student List</h4>
+        
+        <div th:if="${not #lists.isEmpty(students)}">
+          <div class="student-card" th:each="s : ${students}">
+            <div class="card-body">
+              <div class="row align-items-center">
+                <div class="col-auto">
+                  <div class="student-avatar" th:text="${s.name.substring(0, 1).toUpperCase()}">
+                    A
+                  </div>
+                </div>
+                <div class="col">
+                  <h5 class="card-title mb-1" th:text="${s.name}">Name</h5>
+                  <p class="card-text text-muted mb-1" th:text="${s.email}">email@example.com</p>
+                  <p class="card-text mb-0">
+                    <strong>Grade:</strong> 
+                    <span th:text="${s.grade}">0</span>/100
+                    <span th:if="${s.grade >= 60}" class="text-success ms-2">✓ Approved</span>
+                    <span th:unless="${s.grade >= 60}" class="text-danger ms-2">✗ Failed</span>
+                  </p>
+                </div>
+                <div class="col-auto">
+                  <div class="btn-group">
+                    <a class="btn btn-sm btn-primary" th:href="@{'/students/' + ${s.id} + '/edit'}">
+                      <i class="fa fa-edit me-1"></i>Edit
+                    </a>
+                    <form th:action="@{'/students/' + ${s.id} + '/delete'}" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this student?')">
+                      <button class="btn btn-sm btn-danger" type="submit">
+                        <i class="fa fa-trash me-1"></i>Delete
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div th:if="${#lists.isEmpty(students)}" class="text-center py-5">
+          <i class="fas fa-user-slash fa-3x text-muted mb-3"></i>
+          <h4 class="text-muted">No students found</h4>
+          <p class="text-muted">Add your first student using the form</p>
+        </div>
+      </div>
+
+      <!-- Student Form -->
+      <div class="col-lg-4">
+        <div class="form-card">
+          <div class="card-header" th:classappend="${editing} ? 'bg-warning text-white' : 'bg-success text-white'">
+            <h5 class="mb-0">
+              <i class="fas" th:classappend="${editing} ? 'fa-edit' : 'fa-user-plus'"></i>
+              <span th:text="${editing} ? 'Edit Student' : 'Add Student'">Add Student</span>
+            </h5>
+          </div>
+          <div class="card-body">
+            <form th:action="${editing} ? @{'/students/' + ${student.id} + '/update'} : @{/students}" 
+                  th:object="${student}" 
+                  method="post" 
+                  class="row g-3 needs-validation" 
+                  novalidate>
+              
+              <div class="col-12">
+                <label class="form-label">Name</label>
+                <input class="form-control" th:field="*{name}" required>
+                <div class="invalid-feedback">Name is required</div>
+                <div class="text-danger small" th:errors="*{name}"></div>
+              </div>
+              
+              <div class="col-12">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" th:field="*{email}" required>
+                <div class="invalid-feedback">Valid email is required</div>
+                <div class="text-danger small" th:errors="*{email}"></div>
+              </div>
+              
+              <div class="col-12">
+                <label class="form-label">Grade (0-100)</label>
+                <input type="number" min="0" max="100" class="form-control" th:field="*{grade}" required>
+                <div class="invalid-feedback">Grade must be between 0 and 100</div>
+                <div class="text-danger small" th:errors="*{grade}"></div>
+              </div>
+              
+              <div class="col-12">
+                <button class="btn btn-success w-100" type="submit">
+                  <i class="fa fa-save me-1"></i>
+                  <span th:text="${editing} ? 'Update Student' : 'Save Student'">Save Student</span>
+                </button>
+                <a class="btn btn-secondary w-100 mt-2" href="/students">
+                  <i class="fas fa-times me-1"></i> Cancel
+                </a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    (function() {
+      'use strict';
+      const forms = document.querySelectorAll('.needs-validation');
+      Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+          if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          form.classList.add('was-validated');
+        }, false);
+      });
+    })();
+  </script>
+</body>
+</html>
